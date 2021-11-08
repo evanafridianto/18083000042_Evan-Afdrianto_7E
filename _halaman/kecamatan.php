@@ -18,16 +18,14 @@ if (isset($_POST['simpan'])) {
     }
         $extensions     = ['geojson'];
         $nama           = $_FILES['geojson_kecamatan']['name'];
-        $file_tmp       = $_FILES['geojson_kecamatan']['tmp_name']; 
+        $file_tmp       = $_FILES['geojson_kecamatan']['tmp_name'];
+        $file_size      =$_FILES['geojson_kecamatan']['size']; 
         $file_ext	    = strtolower(end(explode('.', $nama)));
-
-
+        
             if (in_array($file_ext, $extensions)===true) {
-                
                 $namafile = $_POST['nama_kecamatan'].rand(1,100).'_'.date("d.m.y");
                 $lokasi = 'assets/upload/geojson/'.$namafile.'.'.$file_ext;
                 move_uploaded_file($file_tmp, $lokasi);// pindah ke folder
-                
                 if ($_POST['id_kecamatan'] == "") {
                 $data['geojson_kecamatan']=$namafile.'.'.$file_ext;
                 $data['kode_kecamatan']= $_POST['kode_kecamatan']; 
@@ -72,8 +70,8 @@ if (isset($_POST['simpan'])) {
             if(empty($form)){
                 $validation[]='Input Tidak Boleh Kosong!';
             }
-            // ekstensi tidak didukung
-            if(!empty($_FILES['geojson_kecamatan']['name'])&& !in_array($file_ext, $extensions)){
+               
+            if(!empty($file_size)&& !in_array($file_ext, $extensions)){
                 $validation[]='Ekstensi GeoJSON Tidak Didukung!';
             }
             //cek validasi
@@ -87,7 +85,6 @@ if (isset($_POST['simpan'])) {
             }else{
                 redirect(url($url));
             }
-
     } 
     if (isset($_GET['hapus'])) {
         $setTemplate=false;

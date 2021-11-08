@@ -10,6 +10,4 @@ $fileJs ='petaJs'
     <div class="card-body" id="map">
     </div>
 </div>
-
-
 <?= content_close() ?>
