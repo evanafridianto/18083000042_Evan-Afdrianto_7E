@@ -7,6 +7,13 @@ if ($session->get('level')!='Admin'){
 }
 if (isset($_POST['simpan'])) {
     $validation=array();
+     // hapus file di dalam folder
+     $db->where('id_kecamatan',$_GET['id']);
+     $get=$db->ObjectBuilder()->getOne('m_kecamatan');
+     $geojson_kecamatan=$get->geojson_kecamatan;
+        unlink('assets/upload/geojson/'.$geojson_kecamatan);
+     // end hapus file di dalam folder
+     
     // cek kode apakah sudah ada
     if($_POST['id_kecamatan']!=""){
         $db->where('id_kecamatan !='.$_POST['id_kecamatan']);
@@ -19,7 +26,7 @@ if (isset($_POST['simpan'])) {
         $extensions     = ['geojson'];
         $nama           = $_FILES['geojson_kecamatan']['name'];
         $file_tmp       = $_FILES['geojson_kecamatan']['tmp_name'];
-        $file_size      =$_FILES['geojson_kecamatan']['size']; 
+        $file_size      = $_FILES['geojson_kecamatan']['size']; 
         $file_ext	    = strtolower(end(explode('.', $nama)));
         
             if (in_array($file_ext, $extensions)===true) {
@@ -38,7 +45,7 @@ if (isset($_POST['simpan'])) {
             
                 $exec=$db->insert('m_kecamatan', $data);
                     $info= '<div class="alert alert-success alert-dismissible fade show">
-                    <button type="button" class="close" data-dismiss="alert">×</button> <strong>SUKSES!</strong> Data Sukses ditambah
+                    <button type="button" class="close" data-dismiss="alert">×</button> <strong>SUKSES!</strong> Data berhasil ditambah
                     </div>';
                 }else{
                 $data['geojson_kecamatan']=$namafile.'.'.$file_ext;
@@ -49,25 +56,27 @@ if (isset($_POST['simpan'])) {
                 $data['sarana_pendidikan']= $_POST['sarana_pendidikan'];
                 $data['lembaga_pendidikan']= implode(",", $_POST['lembaga_pendidikan']);
                 $data['warna_kecamatan']= $_POST['warna_kecamatan'];
+                // update
                 $db->where('id_kecamatan', $_POST['id_kecamatan']);
                 $exec=$db->update("m_kecamatan", $data);
-                // hapus file di dalam folder
-                $db->where('id_kecamatan',$_GET['id']);
-                $get=$db->ObjectBuilder()->getOne('m_kecamatan');
-                $geojson_kecamatan=$get->geojson_kecamatan;
-                unlink('assets/upload/geojson/'.$geojson_kecamatan);
-                // end hapus file di dalam folder
+                
+               
                 $info= '<div class="alert alert-success alert-dismissible fade show">
-                <button type="button" class="close" data-dismiss="alert">×</button> <strong>SUKSES!</strong> Data Sukses diubah
+                <button type="button" class="close" data-dismiss="alert">×</button> <strong>SUKSES!</strong> Data berhasil diubah
                 </div>';
                 }
-            }
-            if($exec){
-                $session->set('info',$info);
+                if($exec){
+                    $session->set('info',$info);
+                }else{
+                    $session->set('info','<div class="alert alert-danger alert-dismissible fade show">
+                    <button type="button" class="close" data-dismiss="alert">×</button> <strong>GAGAL!</strong> Proses gagal
+                    </div>');
+                }
+                redirect(url($url));
             }
              //input tidak boleh kosong
-            $form = $_POST['kode_kecamatan']&&$_POST['nama_kecamatan']&&$_POST['deskripsi_kecamatan']&&$_POST['id_status_idm']&&$_POST['sarana_pendidikan']&& array($_POST['lembaga_pendidikan']&&$_FILES['geojson_kecamatan']['name']);
-            if(empty($form)){
+            $form = $_POST['geojson_kecamatan']['size']&&$_POST['kode_kecamatan']&&$_POST['nama_kecamatan']&&$_POST['deskripsi_kecamatan']&&$_POST['id_status_idm']&&$_POST['sarana_pendidikan']&&$_POST['lembaga_pendidikan'];
+            if(empty($form&&$file_size)){
                 $validation[]='Input Tidak Boleh Kosong!';
             }
                
@@ -78,14 +87,13 @@ if (isset($_POST['simpan'])) {
             if(!empty($validation)){
                 $setTemplate=false;
                 $session->set('error_validation',$validation);
-                $session->set('error_value',$_POST,$_FILES);
+                $session->set('error_value',$_POST);
                 redirect($_SERVER['HTTP_REFERER']);
                 return false;
                         
-            }else{
-                redirect(url($url));
             }
-    } 
+    }
+
     if (isset($_GET['hapus'])) {
         $setTemplate=false;
         // hapus file di dalam folder
@@ -97,7 +105,7 @@ if (isset($_POST['simpan'])) {
         $db->where("id_kecamatan",$_GET['id']);
         $exec=$db->delete('m_kecamatan');
         $info= '<div class="alert alert-success alert-dismissible fade show">
-        <button type="button" class="close" data-dismiss="alert">×</button> <strong>SUKSES!</strong> Data Sukses dihapus
+        <button type="button" class="close" data-dismiss="alert">×</button> <strong>SUKSES!</strong> Data berhasil dihapus
         </div>';
 
         if($exec){
@@ -125,6 +133,7 @@ if (isset($_POST['simpan'])) {
             $id = $_GET['id'];
             $db->where('id_kecamatan', $id);
             $row = $db->ObjectBuilder()->getOne('m_kecamatan');
+            $checkbox = $row->lembaga_pendidikan;
             if ($db->count > 0) {
                 $id_kecamatan = $row->id_kecamatan;
                 $kode_kecamatan = $row->kode_kecamatan;
@@ -132,7 +141,7 @@ if (isset($_POST['simpan'])) {
                 $deskripsi_kecamatan = $row->deskripsi_kecamatan;
                 $id_status_idm = $row->id_status_idm;
                 $sarana_pendidikan = $row->sarana_pendidikan;
-                $lembaga_pendidikan = $row->lembaga_pendidikan;
+                $lembaga_pendidikan = explode(',', $checkbox);
                 $geojson_kecamatan = $row->geojson_kecamatan;
                 $warna_kecamatan = $row->warna_kecamatan;
             }
@@ -216,41 +225,67 @@ if (isset($_POST['simpan'])) {
                 </div>
             </div>
             <div class="form-group">
-                <?php $datageojson = explode(",",$lembaga_pendidikan)?>
                 <label class="d-block">Ketersedian Lembaga Pendidikan</label>
                 <div class="custom-control custom-control-inline custom-checkbox">
+                    <?php
+                    if(empty($id_kecamatan)): ?>
+                    <input type="checkbox" class="custom-control-input" name="lembaga_pendidikan[]" id="tk" value="TK">
+                    <?php else:?>
                     <input type="checkbox" class="custom-control-input" name='lembaga_pendidikan[]' id="tk" value="TK"
-                        <?php if (in_array("TK",$datageojson)) echo "checked";?>>
+                        <?php if (in_array("TK",$lembaga_pendidikan)) echo "checked";?>>
+                    <?php endif;?>
                     <label class="custom-control-label" for="tk">TK/PAUD</label>
                 </div>
-
                 <div class="custom-control custom-control-inline custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name='lembaga_pendidikan[]' id="sd" value="SD"
-                        <?php if (in_array("SD",$datageojson)) echo "checked";?>>
+                    <?php if(empty($id_kecamatan)):?>
+                    <input type="checkbox" class="custom-control-input" name="lembaga_pendidikan[]" id="sd" value="SD">
+                    <?php else:?>
+                    <input type="checkbox" class="custom-control-input" name="lembaga_pendidikan[]" id="sd" value="SD"
+                        <?php if(in_array("SD",$lembaga_pendidikan)) echo "checked";?>>
+                    <?php endif;?>
                     <label class="custom-control-label" for="sd">SD</label>
                 </div>
                 <div class="custom-control custom-control-inline custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name='lembaga_pendidikan[]' id="smp" value="SMP"
-                        <?php if (in_array("SMP",$datageojson)) echo "checked";?>> <label class="custom-control-label"
-                        for="smp">SMP</label>
+                    <?php if(empty($id_kecamatan)):?>
+                    <input type="checkbox" class="custom-control-input" name="lembaga_pendidikan[]" id="smp"
+                        value="SMP">
+                    <?php else:?>
+                    <input type="checkbox" class="custom-control-input" name="lembaga_pendidikan[]" id="smp" value="SMP"
+                        <?php if(in_array("SMP",$lembaga_pendidikan)) echo "checked";?>>
+                    <?php endif;?>
+                    <label class="custom-control-label" for="smp">SMP</label>
                 </div>
                 <div class="custom-control custom-control-inline custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name='lembaga_pendidikan[]' id="sma" value="SMA"
-                        <?php if (in_array("SMA",$datageojson)) echo "checked";?>> <label class="custom-control-label"
-                        for="sma">SMA</label>
+                    <?php if(empty($id_kecamatan)):?>
+                    <input type="checkbox" class="custom-control-input" name="lembaga_pendidikan[]" id="sma"
+                        value="SMA">
+                    <?php else:?>
+                    <input type="checkbox" class="custom-control-input" name="lembaga_pendidikan[]" id="sma" value="SMA"
+                        <?php if(in_array("SMA",$lembaga_pendidikan)) echo "checked";?>>
+                    <?php endif;?>
+                    <label class="custom-control-label" for="sma">SMA</label>
                 </div>
                 <div class="custom-control custom-control-inline custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name='lembaga_pendidikan[]' id="pt" value="PT"
-                        <?php if (in_array("PT",$datageojson)) echo "checked";?>>
+                    <?php if(empty($id_kecamatan)):?>
+                    <input type="checkbox" class="custom-control-input" name="lembaga_pendidikan[]" id="pt" value="PT">
+                    <?php else:?>
+                    <input type="checkbox" class="custom-control-input" name="lembaga_pendidikan[]" id="pt" value="PT"
+                        <?php if(in_array("PT",$lembaga_pendidikan)) echo "checked";?>>
+                    <?php endif;?>
                     <label class="custom-control-label" for="pt">Perguruan Tinggi</label>
                 </div>
             </div>
+            <?= $geojson_kecamatan; ?>
+            <br>
             <?=label('GeoJSON')?>
             <!-- <?=input_file('geojson_kecamatan',$geojson_kecamatan) ?> -->
-            <input type="file" class="form-control" value="<?= $geojson_kecamatan ?>" name="geojson_kecamatan"
-                id="geojson_kecamatan">
+            <?php if(empty($id_kecamatan)):?>
+            <input type="file" class="form-control" name="geojson_kecamatan" value="">
+            <?php else:?>
+            <input type="file" class="form-control" name="geojson_kecamatan" value="<?= $geojson_kecamatan?>">
+            <?php endif;?>
             <?=label('Warna')?>
-            <div class="mb-2">
+            <div class=" mb-2">
                 <?= input_color('warna_kecamatan', $warna_kecamatan) ?>
             </div>
             <div class="form-group">

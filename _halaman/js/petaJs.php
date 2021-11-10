@@ -17,7 +17,15 @@ body {
     width: 100%;
     height: 730px;
 }
+
+.dot {
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    display: inline-block;
+}
 </style>
+
 
 
 
@@ -52,7 +60,8 @@ function popUp(f, l) {
 }
 
 function iconByName(name) {
-    return '<i class="icon" style="background-color:' + name + ';border-radius:50%"></i>';
+
+    return '<span class="dot" style="background-color: ' + name + ';"></span>';
 }
 
 var baseLayers = [{
