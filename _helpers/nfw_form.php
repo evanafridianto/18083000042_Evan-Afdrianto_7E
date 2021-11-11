@@ -131,8 +131,9 @@ function input_password($a, $b, $c = '', $d = '')
     if ($d != '') {
         $d = ' ' . $d;
     }
-    return '<input type="password" name="' . $a . '" value="' . $b . '" class="form-control' . $c . '"' . $d . '>';
+    return '<input type="password" placeholder="'.$a.'"  name="' . $a . '" value="' . $b . '" class="form-control' . $c . '"' . $d . '>';
 }
+
 function input_submit($a, $b)
 {
     return '<input type="submit" name="' . $a . '" value="' . $b . '" class="btn btn-info">';

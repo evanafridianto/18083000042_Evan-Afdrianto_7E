@@ -1,11 +1,15 @@
 <?php
-// echo password_hash(123456, PASSWORD_DEFAULT);
 	$setTemplate=false;
 	if(isset($_POST['login'])){
     $username=$_POST['username'];
+
     $kata_sandi=$_POST['kata_sandi'];
     $db->where("username",$username);
+
+
     $data=$db->ObjectBuilder()->getOne("pengguna");
+
+
     if($db->count>0){
       // jika username ada
       $hash = $data->kata_sandi; 
@@ -14,7 +18,7 @@
           $session->set("username",$data->username);
           $session->set("id_pengguna",$data->id_pengguna);
           $session->set("level",$data->level);
-          $session->set("info",'<h3 class="font-weight-bold">Hi, '.$data->username.'</h3>
+          $session->set("info",'<h3 class="font-weight-bold">Hi, '.$data->nama.'</h3>
           <h5 class="d-block text-muted">Selamat datang dihalaman Beranda!</h5>');
           redirect(url("beranda"));
       } else {
@@ -58,6 +62,9 @@
             <h1>
                 <img src="<?=templates()?>assets/images/brand-inverse.png" alt="" height="72">
             </h1>
+            <p> Don't have a account?
+                <a href="<?= url('register') ?>">Create One</a>
+            </p>
 
         </header>
         <!-- form -->
@@ -66,7 +73,6 @@
             <!-- .form-group -->
             <div class="form-group">
                 <?=$session->pull("info")?>
-
                 <div class="form-label-group">
                     <input type="text" name="username" class="form-control" placeholder="Username" required=""
                         autofocus="">

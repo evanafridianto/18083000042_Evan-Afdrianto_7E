@@ -23,12 +23,17 @@
                     <span class="menu-text">Data Kecamatan</span>
                 </a>
             </li>
-            <?php endif ?>
-            <li class="menu-item">
-                <a href="#" class="menu-link" data-toggle="modal" data-target="#exampleModalCenter">
-                    <span class="menu-icon oi oi-account-logout"></span>
-                    <span class="menu-text">Logout</span>
+            <li class="menu-item <?php if($title=='Data User'):?> has-active <?php endif ?>">
+                <a href="<?=url('user')?>" class="menu-link">
+                    <span class="menu-icon oi oi-people"></span>
+                    <span class="menu-text">Data User</span>
                 </a>
+            </li>
+            <?php endif ?>
+            <li class="">
+                <a class="menu-link" href="#" data-toggle="modal" data-target="#exampleModalCenter">
+                    <span class="menu-icon oi oi-account-logout"></span>
+                    <span class="menu-text"></span> Logout</a>
             </li>
         </ul>
         <!-- /.menu -->

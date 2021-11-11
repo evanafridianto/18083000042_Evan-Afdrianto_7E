@@ -7,7 +7,7 @@ if (isset($_GET['halaman'])) {
   $halaman = $_GET['halaman'];
   
 }else{
-  $halaman = 'peta';
+  $halaman = 'beranda';
 }
 ob_start();
 $file = '_halaman/' . $halaman . '.php';
@@ -50,6 +50,7 @@ if($setTemplate==true){
         <!-- BEGIN BASE JS -->
         <?php include '_layouts/javascript.php' ?>
         <?php include '_layouts/footer.php' ?>
+
         <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalCenterLabel" aria-hidden="true">
             <!-- .modal-dialog -->

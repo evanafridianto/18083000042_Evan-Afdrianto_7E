@@ -9,8 +9,6 @@
 3. Database MariaDB ( [XAMPP](https://www.apachefriends.org/index.html))
 4. Bootstrap [](https://themes.getbootstrap.com/product/looper-responsive-admin-template)
 
-LOGIN :
-1. LEVEL ADMIN :    username : admin 
-                    password : admin
-2. LEVEL USER :     username : user
-                    password : user
+# Login Admin :
+- username : admin 
+- password : 12345678

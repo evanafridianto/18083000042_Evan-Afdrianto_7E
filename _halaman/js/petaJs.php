@@ -50,14 +50,6 @@ var myStyle2 = {
     "opacity": 0.9
 };
 
-function popUp(f, l) {
-
-    var out = [];
-    if (f.properties) {
-        out.push("Kecamatan: " + f.properties['WADMKC']);
-        l.bindPopup(out.join("<br />"));
-    }
-}
 
 function iconByName(name) {
 
@@ -80,14 +72,25 @@ var baseLayers = [{
 
 <?php
 $getKecamatan=$db->ObjectBuilder()->get('m_kecamatan');
-		foreach ($getKecamatan as $row) {
-			?>
+		foreach ($getKecamatan as $row) {?>
 
 var myStyle<?=$row->id_kecamatan?> = {
     "color": "<?=$row->warna_kecamatan?>",
     "weight": 1,
     "opacity": 1
 };
+
+function popUp(f, l) {
+
+    var out = [];
+    if (f.properties) {
+        out.push("KODE KECAMATAN : " + f.properties['WADMKC']);
+
+
+        l.bindPopup(out.join("<br />"));
+    }
+}
+
 
 <?php
 			$arrayKec[]='{
@@ -104,6 +107,12 @@ var overLayers = [{
         <?=implode(',', $arrayKec);?>
     ]
 }];
+
+L.polygon([
+    [51.509, -0.08],
+    [51.503, -0.06],
+    [51.51, -0.047]
+]).addTo(map).bindPopup("I am a polygon.");
 
 var panelLayers = new L.Control.PanelLayers(baseLayers, overLayers, {
     collapsibleGroups: true

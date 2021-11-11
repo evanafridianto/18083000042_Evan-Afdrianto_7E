@@ -1,8 +1,7 @@
 <script src="<?= templates() ?>assets/vendor/stacked-menu/stacked-menu.min.js"></script>
 <script src="<?= templates() ?>assets/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-<script src="<?= templates() ?>assets/vendor/flatpickr/flatpickr.min.js"></script>
 <!-- BEGIN THEME JS -->
-<!-- <script src="<?= templates() ?>assets/javascript/main.min.js"></script> -->
+<script src="<?= templates() ?>assets/javascript/main.min.js"></script>
 <!-- END THEME JS -->
 <!-- BEGIN PLUGINS JS -->
 <script src="<?= templates() ?>assets/vendor/particles.js/particles.min.js"></script>

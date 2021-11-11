@@ -60,7 +60,7 @@
                      <div class="dropdown-arrow dropdown-arrow-left"></div>
                      <!-- .dropdown-menu -->
                      <div class="dropdown-menu">
-                         <a class="dropdown-item" href="user-profile.html">
+                         <a class="dropdown-item" href="#">
                              <span class="dropdown-icon oi oi-person"></span> Profile</a>
                          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModalCenter">
                              <span class="dropdown-icon oi oi-account-logout"></span> Logout</a>

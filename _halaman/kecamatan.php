@@ -7,13 +7,12 @@ if ($session->get('level')!='Admin'){
 }
 if (isset($_POST['simpan'])) {
     $validation=array();
-     // hapus file di dalam folder
-     $db->where('id_kecamatan',$_GET['id']);
-     $get=$db->ObjectBuilder()->getOne('m_kecamatan');
-     $geojson_kecamatan=$get->geojson_kecamatan;
-        unlink('assets/upload/geojson/'.$geojson_kecamatan);
-     // end hapus file di dalam folder
-     
+    $form = $_FILES['geojson_kecamatan']['size']&&$_POST['kode_kecamatan']&&$_POST['nama_kecamatan']&&$_POST['deskripsi_kecamatan']&&$_POST['id_status_idm']&&$_POST['sarana_pendidikan']&&$_POST['lembaga_pendidikan'];
+    $extensions     = ['geojson'];
+    $nama           = $_FILES['geojson_kecamatan']['name'];
+    $file_tmp       = $_FILES['geojson_kecamatan']['tmp_name'];
+    $file_size      = $_FILES['geojson_kecamatan']['size']; 
+    $file_ext	    = strtolower(end(explode('.', $nama)));
     // cek kode apakah sudah ada
     if($_POST['id_kecamatan']!=""){
         $db->where('id_kecamatan !='.$_POST['id_kecamatan']);
@@ -23,77 +22,66 @@ if (isset($_POST['simpan'])) {
     if($db->count>0){
         $validation[]='Kode Kecamatan Sudah Ada';
     }
-        $extensions     = ['geojson'];
-        $nama           = $_FILES['geojson_kecamatan']['name'];
-        $file_tmp       = $_FILES['geojson_kecamatan']['tmp_name'];
-        $file_size      = $_FILES['geojson_kecamatan']['size']; 
-        $file_ext	    = strtolower(end(explode('.', $nama)));
-        
-            if (in_array($file_ext, $extensions)===true) {
-                $namafile = $_POST['nama_kecamatan'].rand(1,100).'_'.date("d.m.y");
-                $lokasi = 'assets/upload/geojson/'.$namafile.'.'.$file_ext;
-                move_uploaded_file($file_tmp, $lokasi);// pindah ke folder
-                if ($_POST['id_kecamatan'] == "") {
-                $data['geojson_kecamatan']=$namafile.'.'.$file_ext;
-                $data['kode_kecamatan']= $_POST['kode_kecamatan']; 
-                $data['nama_kecamatan']= $_POST['nama_kecamatan']; 
-                $data['deskripsi_kecamatan']= $_POST['deskripsi_kecamatan']; 
-                $data['id_status_idm']= $_POST['id_status_idm']; 
-                $data['sarana_pendidikan']= $_POST['sarana_pendidikan']; 
-                $data['lembaga_pendidikan']= implode(",", $_POST['lembaga_pendidikan']);
-                $data['warna_kecamatan']= $_POST['warna_kecamatan'];
-            
-                $exec=$db->insert('m_kecamatan', $data);
-                    $info= '<div class="alert alert-success alert-dismissible fade show">
-                    <button type="button" class="close" data-dismiss="alert">×</button> <strong>SUKSES!</strong> Data berhasil ditambah
-                    </div>';
-                }else{
-                $data['geojson_kecamatan']=$namafile.'.'.$file_ext;
-                $data['kode_kecamatan']= $_POST['kode_kecamatan'];
-                $data['nama_kecamatan']= $_POST['nama_kecamatan'];
-                $data['deskripsi_kecamatan']= $_POST['deskripsi_kecamatan'];
-                $data['id_status_idm']= $_POST['id_status_idm'];
-                $data['sarana_pendidikan']= $_POST['sarana_pendidikan'];
-                $data['lembaga_pendidikan']= implode(",", $_POST['lembaga_pendidikan']);
-                $data['warna_kecamatan']= $_POST['warna_kecamatan'];
+    // input tidak boleh kosong
+    if(empty($form)){
+    $validation[]='Input Tidak Boleh Kosong!';
+    }
+
+    if(!empty($file_size)&& !in_array($file_ext, $extensions)){
+    $validation[]='Ekstensi GeoJSON Tidak Didukung!';
+    }
+    //cek validasi
+    if(!empty($validation)){
+    $setTemplate=false;
+    $session->set('error_validation',$validation);
+    $session->set('error_value',$_POST);
+    redirect($_SERVER['HTTP_REFERER']);
+    return false;
+    }elseif(in_array($file_ext, $extensions)===true){
+        $namafile = $_POST['nama_kecamatan'].rand(1,100).'_'.date("d.m.y");
+        $lokasi = 'assets/upload/geojson/'.$namafile.'.'.$file_ext;
+        move_uploaded_file($file_tmp, $lokasi);// pindah ke folder
+        if ($_POST['id_kecamatan'] == "") {
+            $data['geojson_kecamatan']=$namafile.'.'.$file_ext;
+            $data['kode_kecamatan']= $_POST['kode_kecamatan']; 
+            $data['nama_kecamatan']= $_POST['nama_kecamatan']; 
+            $data['deskripsi_kecamatan']= $_POST['deskripsi_kecamatan']; 
+            $data['id_status_idm']= $_POST['id_status_idm']; 
+            $data['sarana_pendidikan']= $_POST['sarana_pendidikan']; 
+            $data['lembaga_pendidikan']= implode(",", $_POST['lembaga_pendidikan']);
+            $data['warna_kecamatan']= $_POST['warna_kecamatan'];
+            $exec=$db->insert('m_kecamatan', $data);
+            $info= '<div class="alert alert-success alert-dismissible fade show"><button type="button" class="close" data-dismiss="alert">×</button> <strong>SUKSES!</strong> Data berhasil ditambah</div>';
+        }else{
+            // hapus file di dalam folder
+            $db->where('id_kecamatan',$_GET['id']);
+            $get=$db->ObjectBuilder()->getOne('m_kecamatan');
+            $geojson_kecamatan=$get->geojson_kecamatan;
+                unlink('assets/upload/geojson/'.$geojson_kecamatan);
+            // end hapus file di dalam folder
+            $data['geojson_kecamatan']=$namafile.'.'.$file_ext;
+            $data['kode_kecamatan']= $_POST['kode_kecamatan'];
+            $data['nama_kecamatan']= $_POST['nama_kecamatan'];
+            $data['deskripsi_kecamatan']= $_POST['deskripsi_kecamatan'];
+            $data['id_status_idm']= $_POST['id_status_idm'];
+            $data['sarana_pendidikan']= $_POST['sarana_pendidikan'];
+            $data['lembaga_pendidikan']= implode(",", $_POST['lembaga_pendidikan']);
+            $data['warna_kecamatan']= $_POST['warna_kecamatan'];
                 // update
-                $db->where('id_kecamatan', $_POST['id_kecamatan']);
-                $exec=$db->update("m_kecamatan", $data);
-                
-               
-                $info= '<div class="alert alert-success alert-dismissible fade show">
+            $db->where('id_kecamatan', $_POST['id_kecamatan']);
+            $exec=$db->update("m_kecamatan", $data);
+            $info= '<div class="alert alert-success alert-dismissible fade show">
                 <button type="button" class="close" data-dismiss="alert">×</button> <strong>SUKSES!</strong> Data berhasil diubah
                 </div>';
-                }
-                if($exec){
-                    $session->set('info',$info);
-                }else{
-                    $session->set('info','<div class="alert alert-danger alert-dismissible fade show">
-                    <button type="button" class="close" data-dismiss="alert">×</button> <strong>GAGAL!</strong> Proses gagal
-                    </div>');
+            }
+            if($exec){
+                $session->set('info',$info);
+            }else{
+                $session->set('info','<div class="alert alert-danger alert-dismissible fade show"><button type="button" class="close" data-dismiss="alert">×</button> <strong>GAGAL!</strong> Proses gagal</div>');
                 }
                 redirect(url($url));
             }
-             //input tidak boleh kosong
-            $form = $_POST['geojson_kecamatan']['size']&&$_POST['kode_kecamatan']&&$_POST['nama_kecamatan']&&$_POST['deskripsi_kecamatan']&&$_POST['id_status_idm']&&$_POST['sarana_pendidikan']&&$_POST['lembaga_pendidikan'];
-            if(empty($form&&$file_size)){
-                $validation[]='Input Tidak Boleh Kosong!';
-            }
-               
-            if(!empty($file_size)&& !in_array($file_ext, $extensions)){
-                $validation[]='Ekstensi GeoJSON Tidak Didukung!';
-            }
-            //cek validasi
-            if(!empty($validation)){
-                $setTemplate=false;
-                $session->set('error_validation',$validation);
-                $session->set('error_value',$_POST);
-                redirect($_SERVER['HTTP_REFERER']);
-                return false;
-                        
-            }
-    }
-
+        }
     if (isset($_GET['hapus'])) {
         $setTemplate=false;
         // hapus file di dalam folder
@@ -118,7 +106,6 @@ if (isset($_POST['simpan'])) {
         }
         redirect(url($url));
     }
-
     elseif (isset($_GET['tambah']) OR isset($_GET['ubah'])) {
         $id_kecamatan =""; 
         $kode_kecamatan =""; 
@@ -151,8 +138,6 @@ if (isset($_POST['simpan'])) {
             extract($session->pull('error_value'));
         }
     ?>
-
-
 <?php if($id_kecamatan=="" || $id_kecamatan==null){
             $label = 'Form Tambah Data';
 
@@ -161,7 +146,6 @@ if (isset($_POST['simpan'])) {
 
         } 
 ?>
-
 <?= content_open($label) ?>
 <div class="col-xl-5 col-lg-6 col-md-7 d-flex flex-column mx-auto">
     <div class="card-body card mb-4">
@@ -172,7 +156,7 @@ if (isset($_POST['simpan'])) {
                 if($session->get('error_validation')){
                     foreach ($session->pull('error_validation') as $key) {
                         echo ' <span style="color:red">
-                        <span class="oi oi-warning pulse mr-1"></span>'.$key.'</span>';
+                        <span class="fa fa-exclamation-circle fa-fw pulse mr-1"></span>'.$key.'</span>';
                     }
                 }
                 ?>
@@ -275,10 +259,7 @@ if (isset($_POST['simpan'])) {
                     <label class="custom-control-label" for="pt">Perguruan Tinggi</label>
                 </div>
             </div>
-            <?= $geojson_kecamatan; ?>
-            <br>
             <?=label('GeoJSON')?>
-            <!-- <?=input_file('geojson_kecamatan',$geojson_kecamatan) ?> -->
             <?php if(empty($id_kecamatan)):?>
             <input type="file" class="form-control" name="geojson_kecamatan" value="">
             <?php else:?>
