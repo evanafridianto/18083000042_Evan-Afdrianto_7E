@@ -1,25 +1,26 @@
 Leaflet Panel Layers
 ==============
 
+[![npm version](https://badge.fury.io/js/leaflet-panel-layers.svg)](https://badge.fury.io/js/leaflet-panel-layers)
+
 Leaflet Control Layers extended with support groups and icons
 
-Copyright [Stefano Cudini](http://labs.easyblog.it/stefano-cudini/)
+Copyright [Stefano Cudini](https://opengeo.tech/stefano-cudini/)
 
-Tested in Leaflet 0.7.3
+Tested in Leaflet 0.7.x, 1.4.x
 
 **Demo:**
 
-[labs.easyblog.it/maps/leaflet-panel-layers](http://labs.easyblog.it/maps/leaflet-panel-layers/)
+[opengeo.tech/maps/leaflet-panel-layers](https://opengeo.tech/maps/leaflet-panel-layers/)
 
 **Source code:**  
 
-[Github](https://github.com/stefanocudini/leaflet-panel-layers)   
-[Bitbucket](https://bitbucket.org/stefanocudini/leaflet-panel-layers)
-[NPM](https://npmjs.org/package/leaflet-panel-layers)
+[Github](https://github.com/stefanocudini/leaflet-panel-layers)  
 
 **Use Cases:**
-
-[Websites-that-use-Leaflet-Panel-Layers](https://github.com/stefanocudini/leaflet-panel-layers/wiki/Websites-that-use-Leaflet-Panel-Layers)
+* [EnviroMap by EnvironSensing](https://dev-server.uca.es/)
+* [Leaflet Control Search (Official demos)](https://opengeo.tech/maps/leaflet-search/)
+* [Pine Interactive Map](https://pine.blackpinguin.de/)
 
 ![Image](https://raw.githubusercontent.com/stefanocudini/leaflet-panel-layers/master/examples/images/screenshot/leaflet-panel-layers-layout.jpg)
 
@@ -59,6 +60,9 @@ Tested in Leaflet 0.7.3
 		layer: L.geoJson(Bar, {pointToLayer: featureToMarker })
 	}
 ```
+definition in JSON format permit to store simply the configuration 
+type contains a Leaflet method in this case L.geoJson()
+args is the arguments passed to the method: L.geoJson(river)
 ```javascript
 	{
 		layer: {
@@ -67,6 +71,8 @@ Tested in Leaflet 0.7.3
 		},
 	}
 ```
+definition of a group
+
 ```javascript
 	{
 		group: "Title Group",
@@ -83,7 +89,7 @@ var baseLayers = [
 	{
 		active: true,
 		name: "OpenStreetMap",
-		layer: L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+		layer: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
 	}
 ];
 var overLayers = [
@@ -112,7 +118,7 @@ var panelJsonConfig = {
             "layer": {
                 "type": "tileLayer",
                 "args": [
-                    "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
+                    "https://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"
                 ]
             }
         },
@@ -121,7 +127,7 @@ var panelJsonConfig = {
             "layer": {
                 "type": "tileLayer",
                 "args": [
-                    "http://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png"
+                    "https://{s}.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png"
                 ]
             }
         },        
@@ -130,7 +136,7 @@ var panelJsonConfig = {
             "layer": {
                 "type": "tileLayer",
                 "args": [
-                    "http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"
+                    "https://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"
                 ]
             }
         }
@@ -141,7 +147,7 @@ var panelJsonConfig = {
             "layer": {
             "type": "tileLayer",
             "args": [
-                "http://toolserver.org/~cmarqu/hill/{z}/{x}/{y}.png", {
+                "https://toolserver.org/~cmarqu/hill/{z}/{x}/{y}.png", {
                 "opacity": 0.5
                 }
             ]
@@ -165,11 +171,11 @@ L.control.panelLayers(
 			layers: [
 				{
 					name: "Open Cycle Map",
-					layer: L.tileLayer('http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png')
+					layer: L.tileLayer('https://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png')
 				},
 				{
 					name: "Hiking",
-					layer: L.tileLayer("http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png")
+					layer: L.tileLayer("https://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png")
 				}
 			]
 		},
@@ -178,7 +184,7 @@ L.control.panelLayers(
 			layers: [
 				{
 					name: "Transports",
-					layer: L.tileLayer("http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png")
+					layer: L.tileLayer("https://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png")
 				}
 			]
 		}
@@ -199,11 +205,11 @@ L.control.panelLayers([
 		layers: [
 			{
 				name: "Open Cycle Map",
-				layer: L.tileLayer('http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png')
+				layer: L.tileLayer('https://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png')
 			},
 			{
 				name: "Hiking",
-				layer: L.tileLayer("http://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png")
+				layer: L.tileLayer("https://toolserver.org/tiles/hikebike/{z}/{x}/{y}.png")
 			}			
 		]
 	},
@@ -213,7 +219,7 @@ L.control.panelLayers([
 		layers: [
 			{
 				name: "Transports",
-				layer: L.tileLayer("http://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png")
+				layer: L.tileLayer("https://{s}.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png")
 			}
 		]
 	}
@@ -236,7 +242,7 @@ $.getJSON('some/url/path.geojson', function(data){
 
 # Build
 
-This plugin support [Grunt](http://gruntjs.com/) for building process.
+This plugin support [Grunt](https://gruntjs.com/) for building process.
 Therefore the deployment require [NPM](https://npmjs.org/) installed in your system.
 After you've made sure to have npm working, run this in command line:
 ```bash

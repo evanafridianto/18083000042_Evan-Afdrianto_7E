@@ -7,7 +7,7 @@ if (isset($_GET['halaman'])) {
   $halaman = $_GET['halaman'];
   
 }else{
-  $halaman = 'beranda';
+  $halaman = 'front';
 }
 ob_start();
 $file = '_halaman/' . $halaman . '.php';

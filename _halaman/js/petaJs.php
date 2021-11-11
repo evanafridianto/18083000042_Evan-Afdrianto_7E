@@ -1,9 +1,10 @@
 <link rel="stylesheet" href="assets/js/leaflet/leaflet.css">
-<script src="assets/js/leaflet/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+    integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+    crossorigin=""></script>
 
-<script src="assets/js/leaflet-panel-layers-master/src/leaflet-panel-layers.js"></script>
 <link rel="stylesheet" href="assets/js/leaflet-panel-layers-master/src/leaflet-panel-layers.css">
-
+<script src="assets/js/leaflet-panel-layers-master/src/leaflet-panel-layers.js"></script>
 <script src="assets/js/leaflet.ajax.js"></script>
 
 <style>
@@ -25,10 +26,6 @@ body {
     display: inline-block;
 }
 </style>
-
-
-
-
 <script>
 var map = L.map('map').setView([-7.977014, 112.634056], 13);
 
@@ -40,21 +37,12 @@ var Layer = L.tileLayer(
         id: 'mapbox/streets-v11',
         tileSize: 512,
         zoomOffset: -1
-    }).addTo(map);
+    })
 
 map.addLayer(Layer);
 
-var myStyle2 = {
-    "color": "#ffff00",
-    "weight": 1,
-    "opacity": 0.9
-};
 
 
-function iconByName(name) {
-
-    return '<span class="dot" style="background-color: ' + name + ';"></span>';
-}
 
 var baseLayers = [{
         name: "OpenStreetMap",
@@ -68,6 +56,10 @@ var baseLayers = [{
         })
     }
 ];
+
+function iconByName(name) {
+    return '<span class="dot" style="background-color: ' + name + ';"></span>';
+}
 
 
 <?php
@@ -84,7 +76,7 @@ function popUp(f, l) {
 
     var out = [];
     if (f.properties) {
-        out.push("KODE KECAMATAN : " + f.properties['WADMKC']);
+        out.push("NAMA KECAMATAN : " + f.properties['WADMKC']);
 
 
         l.bindPopup(out.join("<br />"));
@@ -107,12 +99,6 @@ var overLayers = [{
         <?=implode(',', $arrayKec);?>
     ]
 }];
-
-L.polygon([
-    [51.509, -0.08],
-    [51.503, -0.06],
-    [51.51, -0.047]
-]).addTo(map).bindPopup("I am a polygon.");
 
 var panelLayers = new L.Control.PanelLayers(baseLayers, overLayers, {
     collapsibleGroups: true

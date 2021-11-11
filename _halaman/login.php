@@ -59,13 +59,14 @@
     <main class="auth">
         <header id="auth-header" class="auth-header"
             style="background-image: url(<?=templates()?>assets/images/illustration/img-1.png);">
-            <h1>
-                <img src="<?=templates()?>assets/images/brand-inverse.png" alt="" height="72">
-            </h1>
+            <a href="<?=url('front')?>">
+                <h1>
+                    <img src="<?=templates()?>assets/images/brand-inverse.png" alt="" height="72">
+                </h1>
+            </a>
             <p> Don't have a account?
                 <a href="<?= url('register') ?>">Create One</a>
             </p>
-
         </header>
         <!-- form -->
 
@@ -101,9 +102,18 @@
         </footer>
     </main>
     <!-- /.auth -->
-    <?php
-  include '_layouts/javascript.php';
-?>
+    <script src="<?=templates()?>assets/vendor/particles.js/particles.min.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116692175-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'UA-116692175-1');
+    </script>
 </body>
 
 </html>
